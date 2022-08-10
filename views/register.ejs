@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="/styles/style.css">
+</head>
+
+<body>
+    <div class="py-12 container mx-auto max-w-2xl min-w-3/4">
+        <h2 class="text-3xl font-bold w-fit mx-auto">
+            Sign Up
+        </h2>
+        <span class="block w-fit mx-auto mt-4"> Already have an account <a href="/login"
+                class="px-2 bg-emerald-100 text-emerald-500">Login</a> </span>
+        <div class="mt-12 w-3/4 mx-auto">
+            <div class="grid grid-cols-1 gap-6">
+                <label class="block">
+                    <span class="text-gray-700">Name</span>
+                    <input type="text" id="name" class="mt-1 block w-full" placeholder="john@example.com" />
+                </label>
+                <label class="block">
+                    <span class="text-gray-700">Username</span>
+                    <input type="text" id="username" class="mt-1 block w-full" placeholder="john@example.com" />
+                </label>
+
+                <label class="block">
+                    <span class="text-gray-700">Password</span>
+                    <input type="password" id="password" class="mt-1 block w-full" />
+                </label>
+                <label class="block">
+                    <span class="text-gray-700">Confirm Password</span>
+                    <input type="password" id="confirmPassword" class="mt-1 block w-full" />
+                </label>
+
+                <div class="mt-4">
+                    <button id="register" type="submit"
+                        class="px-6 py-2 w-full font-semibold bg-emerald-100 text-emerald-600 hover:bg-emerald-300">Login</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const btnRegister = document.getElementById("register");
+        const username = document.getElementById("username");
+        const name = document.getElementById("name");
+        const password = document.getElementById("password");
+        const confirmPassword = document.getElementById("confirmPassword");
+
+
+        btnRegister.addEventListener("click", async () => {
+
+            if (password.value !== confirmPassword.value) {
+                alert("Password is not same");
+                confirmPassword.classList.add("outline");
+                confirmPassword.classList.add("outline-red-500");
+                return;
+            }
+            confirmPassword.classList.remove("outline");
+            confirmPassword.classList.remove("outline-red-500");
+
+
+            const result = await fetch("/register", {
+                method: "POST",
+                headers: {
+                    "content-type": "application/json"
+                },
+                body: JSON.stringify({ "username": username.value, "password": password.value, "name": name.value })
+            })
+            const res = await result.json();
+            if (res.status === false) {
+                alert(res.data);
+            } else {
+                window.location.assign("/")
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="/styles/style.css">
+</head>
+
+<body>
+    <div class="py-12 container mx-auto max-w-2xl min-w-3/4">
+        <h2 class="text-3xl font-bold w-fit mx-auto">
+            Add Birthdays
+        </h2>
+
+        <div class="mt-12 w-3/4 mx-auto">
+            <div class="grid grid-cols-1 gap-6">
+                <label class="block">
+                    <span class="text-gray-700">Name</span>
+                    <input type="text" id="name" class="mt-1 block w-full" placeholder="john@example.com" />
+                </label>
+                <label class="block">
+                    <span class="text-gray-700">Date</span>
+                    <input type="date" id="date" class="mt-1 block w-full" />
+                </label>
+                <label class="block">
+                    <span class="text-gray-700">Priority</span>
+                    <select class="block w-full mt-1" id="priority" required>
+                        <option value="high">High</option>
+                        <option value="medium">Medium</option>
+                        <option value="low">Low</option>
+                    </select>
+                </label>
+                <div class="mt-4">
+                    <button id="submitBtn" type="submit"
+                        class="px-6 py-2 w-full font-semibold bg-emerald-100 text-emerald-600 hover:bg-emerald-300">Add</button>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="p-4 my-24 bg-white rounded-lg border shadow-md sm:p-8 dark:bg-gray-800 dark:border-gray-700">
+            <h5 class="text-2xl my-6 text-center font-bold leading-none text-gray-900 dark:text-white">Your Entries</h5>
+            <div class="flow-root">
+                <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700">
+                    <% data?.forEach(function(user){ %>
+                        <li class="py-3 sm:py-4">
+                            <div class="flex items-center space-x-4">
+                                <div class="flex-shrink-0">
+                                    <div class="rounded-full w-7 h-7 bg-emerald-300" data-item="round"> </div>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-lg font-medium text-gray-900 truncate dark:text-white">
+                                        <%= user.name %>
+                                    </p>
+                                    <p>
+                                        <%= user.priority %>
+                                    </p>
+                                </div>
+                                <div
+                                    class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
+                                    <%= new Date(Date.parse(user.date)).toLocaleDateString("en-US", { weekday: 'long' ,
+                                        year: 'numeric' , month: 'long' , day: 'numeric'
+                                        }).split(", ").slice(1,2).join(" ") %>
+                                </div>
+                            </div>
+                        </li>
+                        <% }); %>
+                </ul>
+            </div>
+        </div>
+        <button id=" logout" onclick="Logout();"
+                                        class="px-6 py-2 w-full font-semibold bg-red-100 text-red-600 hover:bg-red-300">
+                                        Logout</button>
+
+
+
+
+
+
+
+                                        <script>
+                                            const logout = document.getElementById("logout");
+                                            const submitBtn = document.getElementById("submitBtn");
+
+                                            const name = document.getElementById("name");
+                                            const date = document.getElementById("date");
+                                            const priority = document.getElementById("priority");
+                                            const colors = ['orange', 'emerald', 'red', 'yellow', 'blue', 'teal'];
+                                            const items = document.querySelectorAll('[data-item]');
+                                            items.forEach(e => e.classList.add(`bg-${colors[Math.ceil(Math.random() * colors.length - 1)]}-400`))
+
+                                            submitBtn.addEventListener("click", async () => {
+                                                console.log(name.value);
+                                                console.log(priority.value);
+                                                console.log(date.value);
+                                                if (!name.value || !date.value) {
+                                                    alert('Plese enter the details!');
+                                                    return;
+                                                }
+                                                const result = await fetch("/add", {
+                                                    method: "POST",
+                                                    headers: {
+                                                        "content-type": "application/json"
+                                                    },
+                                                    body: JSON.stringify({
+                                                        name: name.value,
+                                                        date: date.value,
+                                                        priority: priority.value
+                                                    })
+                                                });
+                                                const res = await result.json();
+                                                if (res.status === false) {
+                                                    alert(res.data);
+                                                } else {
+                                                    window.location.assign("/")
+                                                }
+                                            });
+
+                                            async function Logout() {
+                                                const result = await fetch("/logout", {
+                                                    method: "DELETE",
+                                                    headers: {
+                                                        "content-type": "application/json"
+                                                    },
+                                                })
+                                                window.location.assign("/login")
+                                            }
+                                        </script>
+</body>
+
+</html>
+
+
+<!-- CREATE TABLE jwt_birthdays
+(
+    id UUID NOT NULL DEFAULT uuid_generate_v4(),
+    name TEXT NOT NULL,
+    date DATE NOT NULL,
+    priority TEXT CHECK (priority IN ('high', 'medium', 'low')),
+    owner UUID REFERENCES jwt_users(id) ON UPDATE CASCADE,
+    CONSTRAINT pkey_tbl PRIMARY KEY (id)
+); -->

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="/styles/style.css">
+</head>
+
+<body>
+    <div class="py-12 container mx-auto max-w-2xl min-w-3/4">
+        <h2 class="text-3xl font-bold w-fit mx-auto">
+            Login
+        </h2>
+        <span class="block w-fit mx-auto mt-4">Do not have an account? <a href="/register"
+                class="px-2 bg-emerald-100 text-emerald-500">Sign Up</a> </span>
+
+        <div class="mt-12 w-3/4 mx-auto">
+            <div class="grid grid-cols-1 gap-6">
+                <label class="block">
+                    <span class="text-gray-700">Email</span>
+                    <input type="email" id="username" class="mt-1 block w-full" placeholder="john@example.com" />
+                </label>
+
+                <label class="block">
+                    <span class="text-gray-700">Password</span>
+                    <input type="password" id="password" class="mt-1 block w-full" />
+                </label>
+
+                <div class="mt-4">
+                    <button id="login" type="submit"
+                        class="px-6 py-2 w-full font-semibold bg-emerald-100 text-emerald-600 hover:bg-emerald-300">Login</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const btnLogin = document.getElementById("login");
+        const username = document.getElementById("username");
+        const password = document.getElementById("password");
+        const confirmPassword = document.getElementById("confirmPassword");
+
+        btnLogin.addEventListener("click", async () => {
+            const result = await fetch("/login", {
+                method: "POST",
+                headers: {
+                    "content-type": "application/json"
+                },
+                body: JSON.stringify({ "username": username.value, "password": password.value })
+            })
+            const res = await result.json();
+            if (res.status === false) {
+                alert(res.data);
+            } else {
+                window.location.assign("/")
+            }
+        });
+    </script>
+</body>
+
+</html>
