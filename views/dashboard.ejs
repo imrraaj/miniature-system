@@ -132,14 +132,3 @@
 </body>
 
 </html>
-
-
-<!-- CREATE TABLE jwt_birthdays
-(
-    id UUID NOT NULL DEFAULT uuid_generate_v4(),
-    name TEXT NOT NULL,
-    date DATE NOT NULL,
-    priority TEXT CHECK (priority IN ('high', 'medium', 'low')),
-    owner UUID REFERENCES jwt_users(id) ON UPDATE CASCADE,
-    CONSTRAINT pkey_tbl PRIMARY KEY (id)
-); -->
